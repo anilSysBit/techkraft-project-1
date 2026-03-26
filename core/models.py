@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
+from django.conf import settings
+from django.utils import timezone
 # Create your models here.
 
 
@@ -30,12 +32,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.full_name} ({self.email})"
-
-
-
-from django.db import models
-from django.conf import settings
-from django.utils import timezone
 
 
 class BaseModel(models.Model):
