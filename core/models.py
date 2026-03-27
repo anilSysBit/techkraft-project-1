@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MinValueValidator
 from django.conf import settings
 from django.utils import timezone
+from utils.helper import upload_to_model_folder
 # Create your models here.
 
 
@@ -188,6 +189,55 @@ class Property(BaseModel):
     def __str__(self):
         return f"{self.title} ({self.location}) - Rs.{self.actual_price}"
 
+
+
+class PropertyImage(BaseModel):
+    """
+    Stores images associated with a property.
+
+    Supports multiple images per property with optional metadata such as
+    ordering, primary image flag, and alt text.
+    """
+
+    property = models.ForeignKey(
+        "Property",
+        on_delete=models.CASCADE,
+        related_name="images",
+        help_text="Property to which this image belongs."
+    )
+
+    image = models.ImageField(
+        upload_to="property_images/",
+        help_text="Uploaded image file for the property."
+    )
+
+    alt_text = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Optional alt text for accessibility and SEO."
+    )
+
+    is_primary = models.BooleanField(
+        default=False,
+        help_text="Indicates if this image is the main display image."
+    )
+
+    display_order = models.PositiveIntegerField(
+        default=0,
+        help_text="Controls the order in which images are displayed."
+    )
+
+    class Meta:
+        verbose_name = "Property Image"
+        verbose_name_plural = "Property Images"
+        ordering = ["display_order", "-created_at"]
+        indexes = [
+            models.Index(fields=["property"]),
+        ]
+
+    def __str__(self):
+        return f"{self.property.title} - Image {self.id}"
 
 
 
