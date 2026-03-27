@@ -207,7 +207,7 @@ class PropertyImage(BaseModel):
     )
 
     image = models.ImageField(
-        upload_to="property_images/",
+        upload_to=upload_to_model_folder,
         help_text="Uploaded image file for the property."
     )
 
